@@ -1,0 +1,10 @@
+<div class="user-list">
+    <div
+    *ngFor="let user of users"
+    (click)="selectUser(user)"
+    [class.active]="user.id===selectedUserId"
+    style="border: 1px solid black;padding:20px ;"
+    >
+    {{user.name}}
+    </div>
+</div>

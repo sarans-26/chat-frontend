@@ -1,0 +1,19 @@
+<div class="chat-layout" style="display: flex; height: 100vh;">
+  <app-chat-list
+    [users]="users"
+    [selectedUserId]="selectedUser?.id || null"
+    (selectedUser)="onUserSelected($event)"
+    style="width: 25%; border-right: 1px solid #ccc;"
+  ></app-chat-list>
+
+  <div style="flex: 1; padding: 16px;">
+    <ng-container *ngIf="selectedUser; else noSelection">
+      <h2>Selected User</h2>
+      <p><strong>ID:</strong> {{ selectedUser?.id }}</p>
+      <p><strong>Name:</strong> {{ selectedUser?.name }}</p>
+    </ng-container>
+    <ng-template #noSelection>
+      <p>Please select a user to see details.</p>
+    </ng-template>
+  </div>
+</div>

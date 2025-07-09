@@ -1,0 +1,17 @@
+<form [formGroup]="registerFormData" (ngSubmit)="onSubmit()">
+    <div>
+        <label>Name</label>
+        <input type="text" formControlName="name">
+        <div *ngIf="f.name.touched && f.name.invalid" style="color:red;">
+            Name is Invalid min 3 chars
+        </div>
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" formControlName="password">
+        <div *ngIf="f.password.touched && f.password.invalid" style="color:red;">
+            Password is Invalid min  6 chars
+        </div>
+    </div>
+    <button type="submit">Register</button>
+</form>
