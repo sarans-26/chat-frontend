@@ -1,1 +1,4 @@
-<p>user name and logout button</p>
+<div *ngIf="auth.user() as user">
+  <span>{{ user.username }}</span>
+  <button (click)="logout()">Logout</button>
+</div>
