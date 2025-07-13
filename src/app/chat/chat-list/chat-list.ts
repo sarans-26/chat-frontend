@@ -1,10 +1,7 @@
 import { NgFor } from '@angular/common';
 import { Component, EventEmitter, Input, Output, output } from '@angular/core';
+import { User } from '../../chat.model';
 
-interface User{
-  name:string,
-  id:string
-}
 
 @Component({
   selector: 'app-chat-list',

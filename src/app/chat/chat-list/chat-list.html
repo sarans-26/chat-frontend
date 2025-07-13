@@ -2,9 +2,9 @@
     <div
     *ngFor="let user of users"
     (click)="selectUser(user)"
-    [class.active]="user.id===selectedUserId"
+    [class.active]="user._id===selectedUserId"
     style="border: 1px solid black;padding:20px ;"
     >
-    {{user.name}}
+    {{user.username}}
     </div>
 </div>
