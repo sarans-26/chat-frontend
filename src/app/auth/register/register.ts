@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 interface RegisterForm{
   name:string,
@@ -17,7 +17,7 @@ export class Register {
   error:string=""
   success:string=""
 
-  constructor(private auth:Auth,private router:Router){  }
+  constructor(private auth:AuthService,private router:Router){  }
 
   registerFormData=new FormGroup({
     name:new FormControl('',[Validators.required,Validators.minLength(3)]),

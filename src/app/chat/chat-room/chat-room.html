@@ -1,7 +1,7 @@
 <app-nav></app-nav>
+<div>Current User ID: {{ currentUserId }}</div>
 <div class="chat-layout" style="display: flex; height: 100vh;">
   <app-chat-list
-    [users]="users"
     [selectedUserId]="selectedUser?._id || null"
     (selectedUser)="onUserSelected($event)"
     style="width: 25%; border-right: 1px solid #ccc;"
@@ -13,8 +13,9 @@
 
       <!-- Chat message list -->
       <div *ngFor="let msg of filteredMessages" style="margin-bottom: 10px;">
+        
         <b>{{ msg.senderId === currentUserId ? 'You' : selectedUser.username }}:</b>
-        {{ msg.content }}
+        {{ msg.text }}
         <br />
         <small style="color: gray;">{{ msg.timestamp | date: 'shortTime' }}</small>
       </div>
@@ -26,6 +27,7 @@
           formControlName="message"
           placeholder="Type a message..."
           style="padding: 8px; width: 70%;"
+          autocomplete="off"
         />
         <button type="submit" style="padding: 8px;">Send</button>
         <div *ngIf="chatForm.controls.message.touched && chatForm.controls.message.invalid" style="color: red;">

@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { User } from '../../chat.model';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth';
 import { NgIf } from '@angular/common';
 import { Route, Router } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { Route, Router } from '@angular/router';
   styleUrl: './nav.css'
 })
 export class Nav {
-  constructor(public auth:Auth,private router:Router){
+  constructor(public auth:AuthService,private router:Router){
     // console.log(auth)
   }
  async logout() {

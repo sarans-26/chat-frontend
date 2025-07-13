@@ -1,34 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ChatList } from '../chat-list/chat-list';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-
-import type { User, Message } from '../../chat.model';  // adjust path as needed
+import { UserService } from '../../services/user';
+import { MessageService } from '../../services/message-service';
 import { Nav } from '../nav/nav';
+import type { User, Message } from '../../chat.model';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-chat-room',
-  imports: [ReactiveFormsModule, ChatList, NgIf, DatePipe, NgFor,Nav],
+  standalone: true,
+  imports: [ReactiveFormsModule, ChatList, NgIf, DatePipe, NgFor, Nav],
   templateUrl: './chat-room.html',
-  styleUrls: ['./chat-room.css'],
-  standalone: true
+  styleUrls: ['./chat-room.css']
 })
-export class ChatRoom {
-  public readonly currentUserId = '0';
-
-  public users: User[] = [
-    { _id: '1', username: 'Alice', isOnline: true },
-    { _id: '2', username: 'Bob', isOnline: false },
-    { _id: '3', username: 'Charlie', isOnline: true }
-  ];
-
-  public allMessages: Message[] = [
-    { _id:"mi",senderId: '1', receiverId: '0', content: 'Hi!', timestamp: new Date(Date.now() - 600000),delivered: true, read: true },
-    { _id:"mi",senderId: '0', receiverId: '1', content: 'Hello Alice!', timestamp: new Date(Date.now() - 300000) ,delivered: true, read: true },
-    { _id:"mi",senderId: '2', receiverId: '0', content: 'Are you there?', timestamp: new Date(Date.now() - 120000) ,delivered: true, read: false },
-  ];
-
+export class ChatRoom implements OnInit {
   public selectedUser: User | null = null;
+
+  constructor(
+    public userService: UserService,
+    public messageService: MessageService,
+    public auth: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.userService.fetchUsers();
+    this.messageService.fetchMessages();
+  }
+
+  public get currentUserId(): string | undefined {
+    return this.auth.user()?.['_id'];
+  }
+
+  public get users() {
+    return this.userService.users();
+  }
+
+  public get allMessages() {
+    return this.messageService.messages();
+  }
 
   public chatForm = new FormGroup({
     message: new FormControl('', Validators.required)
@@ -36,10 +47,9 @@ export class ChatRoom {
 
   public get filteredMessages(): Message[] {
     if (!this.selectedUser) return [];
-
     return this.allMessages.filter(m =>
-      (m.senderId === this.currentUserId && m.receiverId === this.selectedUser!._id) ||
-      (m.receiverId === this.currentUserId && m.senderId === this.selectedUser!._id)
+      (m.senderId === this.currentUserId && m.receiverId === this.selectedUser?._id) ||
+      (m.receiverId === this.currentUserId && m.senderId === this.selectedUser?._id)
     );
   }
 
@@ -47,22 +57,25 @@ export class ChatRoom {
     this.selectedUser = user;
   }
 
-  public sendMessage(): void {
+  public async sendMessage() {
     if (!this.selectedUser || this.chatForm.invalid) {
       this.chatForm.markAllAsTouched();
       return;
     }
 
     const newMessage: Message = {
-      senderId: this.currentUserId,
+      _id: crypto.randomUUID(),
+      senderId: this.currentUserId!,
       receiverId: this.selectedUser._id,
-      content: this.chatForm.value.message!,
+      text: this.chatForm.value.message!,
       timestamp: new Date(),
-      delivered: false,
-      read: false
+      read: false,
     };
 
-    this.allMessages.push(newMessage);
+    // this.messageService.messages.update((msgs) => [...msgs, newMessage]);
     this.chatForm.reset();
+    await this.messageService.sendMessage(newMessage); // Persist to backend and update signal
+    this.chatForm.reset();
+    // Optionally: send to backend via socket or HTTP
   }
 }

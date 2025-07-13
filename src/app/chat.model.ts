@@ -1,7 +1,7 @@
 export interface User {
   _id: string;
   username: string;
-  isOnline: boolean;
+  isOnline?: boolean;
   lastSeen?: Date;
   avatarUrl?: string;
 }
@@ -10,9 +10,8 @@ export interface Message {
   _id?: string;
   senderId: string;
   receiverId: string;
-  content: string;
+  text: string;
   timestamp: Date;
-  delivered: boolean;
   read: boolean;
 }
 

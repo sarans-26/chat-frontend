@@ -6,7 +6,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class Auth {
+export class AuthService {
 
   constructor(private http:HttpClient) {  }
   user=signal<User|null>(null);
