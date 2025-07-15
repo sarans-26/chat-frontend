@@ -44,4 +44,33 @@
       <p>Please select a user to see chat messages.</p>
     </ng-template>
   </div>
+
+
+  <div style="width: 30%; padding: 16px;">
+    <div class="video-chat-controls">
+      <button 
+        *ngIf="selectedUser && !isVideoChatActive && !incomingVideoOffer" 
+        (click)="offerVideoChat()">
+        Offer Video Chat
+      </button>
+      <button 
+        *ngIf="incomingVideoOffer && !isVideoChatActive" 
+        (click)="acceptVideoChat()">
+        Accept Video Chat
+      </button>
+    </div>
+    <div *ngIf="isVideoChatActive" class="video-chat-area">
+      <video id="localVideo" autoplay muted style="width: 100%; max-height: 180px; background: #222;"></video>
+      <video id="remoteVideo" autoplay style="width: 100%; max-height: 180px; background: #222;"></video>
+      <div class="video-chat-actions" style="margin-top: 10px;">
+        <button (click)="toggleMute()">
+          {{ isMuted ? 'Unmute' : 'Mute' }}
+        </button>
+        <button (click)="endVideoChat()">
+          End Call
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
