@@ -7,6 +7,7 @@ import { MessageService } from '../../services/message-service';
 import { Nav } from '../nav/nav';
 import type { User, Message } from '../../chat.model';
 import { AuthService } from '../../services/auth';
+import { SocketService } from '../../services/socket-service';
 
 @Component({
   selector: 'app-chat-room',
@@ -21,12 +22,14 @@ export class ChatRoom implements OnInit {
   constructor(
     public userService: UserService,
     public messageService: MessageService,
-    public auth: AuthService
-  ) {}
+    public auth: AuthService,
+    public socketService: SocketService
+  ) { }
 
   ngOnInit(): void {
     this.userService.fetchUsers();
     this.messageService.fetchMessages();
+
   }
 
   public get currentUserId(): string | undefined {
@@ -55,6 +58,28 @@ export class ChatRoom implements OnInit {
 
   public onUserSelected(user: User): void {
     this.selectedUser = user;
+    const roomId = [this.currentUserId, user._id].sort().join('_');
+    this.socketService.socket.emit('joinRoom', roomId);
+
+  }
+  public formatMessageDate(dateStr: string | Date): string {
+    const messageDate = new Date(dateStr);
+    const today = new Date();
+
+    const isToday =
+      messageDate.getDate() === today.getDate() &&
+      messageDate.getMonth() === today.getMonth() &&
+      messageDate.getFullYear() === today.getFullYear();
+
+    return isToday
+      ? messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : messageDate.toLocaleString([], {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
   }
 
   public async sendMessage() {

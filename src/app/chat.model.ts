@@ -13,6 +13,7 @@ export interface Message {
   text: string;
   timestamp: Date;
   read: boolean;
+  createdAt?:Date;
 }
 
 export interface ChatSummary {
