@@ -20,7 +20,7 @@ export class MessageService {
       this.http.post<Message>('/api/message/send', message, { withCredentials: true })
     );
     // Update the local messages signal with the new message
-    this.messages.update(msgs => [...msgs, saved]);
+    // this.messages.update(msgs => [...msgs, saved]);
     return saved;
   }
  

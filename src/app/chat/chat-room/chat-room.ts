@@ -29,6 +29,9 @@ export class ChatRoom implements OnInit {
   ngOnInit(): void {
     this.userService.fetchUsers();
     this.messageService.fetchMessages();
+    this.socketService.socket.on('chatMessage', (msg: Message) => {
+      this.messageService.messages.update((msgs) => [...msgs, msg]);
+    });
 
   }
 
@@ -96,6 +99,9 @@ export class ChatRoom implements OnInit {
       timestamp: new Date(),
       read: false,
     };
+    const roomId = [this.currentUserId, this.selectedUser._id].sort().join('_');
+    this.socketService.socket.emit('chatMessage', { roomId, message: newMessage });
+
 
     // this.messageService.messages.update((msgs) => [...msgs, newMessage]);
     this.chatForm.reset();
